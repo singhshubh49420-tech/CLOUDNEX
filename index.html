@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080f1d">
+  <title>CLOUDNEX — Game Hosting</title>
+  <style>
+    :root{--bg:#080f1d;--panel:#101d30;--panel2:#14243a;--line:#243750;--blue:#3998ff;--cyan:#62d5ff;--text:#edf5ff;--muted:#91a6c1;--green:#45d49a}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% -15%,#163d68 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,Segoe UI,Arial,sans-serif}
+    button,input,select{font:inherit}button{cursor:pointer}.layout{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+    aside{border-right:1px solid var(--line);background:#091321eF;padding:24px 16px;display:flex;flex-direction:column;gap:28px}
+    .brand{font-size:22px;font-weight:900;letter-spacing:1.5px;color:white;padding:0 10px}.brand span{color:var(--blue)}
+    .brand small{display:block;font-size:9px;letter-spacing:3px;color:var(--muted);font-weight:700;margin-top:-3px}
+    .nav-label{font-size:10px;letter-spacing:2px;color:#7187a2;padding:0 12px;margin-bottom:8px}
+    .nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:#a9bbd1;text-align:left;padding:11px 13px;border-radius:10px;display:flex;gap:12px;align-items:center}
+    .nav button.active,.nav button:hover{background:#142b47;color:#fff}.nav .ico{width:20px;text-align:center;color:#68b5ff}
+    .side-bottom{margin-top:auto;background:#101f33;border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--muted);font-size:12px}
+    main{min-width:0;padding:28px 34px 50px;max-width:1500px;width:100%;margin:auto}
+    header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:30px}
+    .eyebrow{font-size:11px;letter-spacing:2px;color:var(--cyan);font-weight:800}.heading{font-size:27px;font-weight:800;margin:4px 0}.sub{color:var(--muted);margin:0}
+    .user{border:1px solid var(--line);background:#102039;padding:9px 13px;border-radius:12px;color:#d9eaff;font-size:13px}
+    .hero{border:1px solid #28517b;border-radius:20px;padding:30px;background:linear-gradient(115deg,#102b4a,#102039 60%,#102a42);position:relative;overflow:hidden;margin-bottom:22px}
+    .hero:after{content:"";position:absolute;width:250px;height:250px;border:1px solid #4c9fe533;border-radius:50%;right:8%;top:-110px;box-shadow:0 0 0 30px #4c9fe511,0 0 0 60px #4c9fe509}
+    .hero h2{font-size:clamp(26px,4vw,39px);line-height:1.12;margin:8px 0 12px;max-width:600px}.hero p{color:#b4c9e2;max-width:570px;margin:0 0 20px}
+    .btn{border:0;border-radius:10px;padding:11px 16px;font-weight:750;background:linear-gradient(100deg,#2585ed,#36b7f4);color:white;box-shadow:0 8px 25px #1689ed30}
+    .btn.secondary{background:#1a2c43;border:1px solid #304963;box-shadow:none;color:#e4f1ff}.btn.danger{background:#44212c;border:1px solid #793344;box-shadow:none}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:22px}
+    .stat,.card{background:linear-gradient(145deg,#122138,#0e192a);border:1px solid var(--line);border-radius:15px;padding:18px}
+    .stat .label{color:var(--muted);font-size:12px}.stat strong{display:block;font-size:25px;margin-top:5px}.stat small{color:#7f96b3}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:25px 0 13px}.section-head h3{margin:0;font-size:17px}
+    .server-list{display:grid;gap:12px}.server{display:flex;align-items:center;justify-content:space-between;gap:14px;background:#101d30;border:1px solid var(--line);border-radius:14px;padding:16px}
+    .server-left{display:flex;align-items:center;gap:13px;min-width:0}.server-icon{width:43px;height:43px;border-radius:12px;background:#18385b;display:grid;place-items:center;font-size:21px}
+    .server h4{margin:0 0 3px;font-size:14px}.server p{margin:0;color:var(--muted);font-size:12px}.status{font-size:11px;border-radius:30px;padding:5px 9px;background:#3a2b19;color:#ffd18b;white-space:nowrap}
+    .empty{padding:32px;text-align:center;color:var(--muted);border:1px dashed #30445f;border-radius:14px}
+    .page{display:none}.page.active{display:block}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    label{display:block;color:#b8c9dd;font-size:12px;font-weight:700;margin-bottom:7px}
+    input,select{width:100%;background:#0a1525;border:1px solid #2b405b;color:white;padding:12px;border-radius:10px;outline:none}
+    input:focus,select:focus{border-color:var(--blue)}.field{margin-bottom:15px}.hint{font-size:11px;color:#8197b2;margin-top:6px}
+    .notice{border:1px solid #66512b;background:#2a2418;color:#f2d8a5;padding:13px 15px;border-radius:12px;font-size:12px;margin:16px 0}
+    .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.feature{padding:16px;border:1px solid var(--line);border-radius:13px;background:#101d30}.feature b{display:block;margin:7px 0 3px}.feature p{color:var(--muted);font-size:12px;margin:0}
+    .footer{color:#7086a2;font-size:11px;text-align:center;margin-top:35px}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#173453;border:1px solid #3975a9;color:white;padding:11px 16px;border-radius:12px;display:none;z-index:5;box-shadow:0 10px 30px #0008}
+    @media(max-width:850px){.layout{grid-template-columns:1fr}aside{position:sticky;top:0;z-index:3;padding:12px 14px;border-right:0;border-bottom:1px solid var(--line);gap:10px}.brand{padding:0 5px}.brand small,.nav-label,.side-bottom{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:9px 11px}.nav .ico{display:none}main{padding:20px 16px 40px}}
+    @media(max-width:600px){header{align-items:flex-start}.user{font-size:11px}.grid{grid-template-columns:1fr}.form-grid,.feature-grid{grid-template-columns:1fr}.hero{padding:23px}.server{align-items:flex-start;flex-direction:column}.server .btn{width:100%}.heading{font-size:23px}}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside>
+    <div class="brand">◆ CLOUD<span>NEX</span><small>GAME HOSTING</small></div>
+    <div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="nav">
+        <button class="active" data-page="overview"><span class="ico">▦</span>Overview</button>
+        <button data-page="servers"><span class="ico">▣</span>My Servers</button>
+        <button data-page="create"><span class="ico">＋</span>Create Server</button>
+        <button data-page="features"><span class="ico">◇</span>Features</button>
+      </nav>
+    </div>
+    <div class="side-bottom">◆ <b style="color:#dcecff">CLOUDNEX</b><br>Prototype dashboard<br><br>Game server infrastructure is not connected yet.</div>
+  </aside>
+
+  <main>
+    <header>
+      <div><div class="eyebrow">YOUR CLOUD. YOUR CONTROL.</div><div class="heading" id="pageTitle">Overview</div><p class="sub">Manage your Minecraft hosting from one place.</p></div>
+      <div class="user">◉ Guest Account</div>
+    </header>
+
+    <section class="page active" id="overview">
+      <div class="hero">
+        <div class="eyebrow">WELCOME TO CLOUDNEX</div>
+        <h2>Your Minecraft world.<br>Under your control.</h2>
+        <p>Create and organize your Java or Bedrock server from a clean, simple dashboard. Server provisioning will be enabled after backend integration.</p>
+        <button class="btn" onclick="showPage('create')">＋ Create a server</button>
+      </div>
+      <div class="grid">
+        <div class="stat"><span class="label">YOUR SERVERS</span><strong id="serverCount">0</strong><small>Saved in this browser demo</small></div>
+        <div class="stat"><span class="label">RUNNING SERVERS</span><strong>—</strong><small>Backend not connected</small></div>
+        <div class="stat"><span class="label">ACCOUNT PLAN</span><strong>Free</strong><small>Prototype mode</small></div>
+      </div>
+      <div class="section-head"><h3>Recent servers</h3><button class="btn secondary" onclick="showPage('servers')">View all</button></div>
+      <div id="recentServers" class="server-list"><div class="empty">No servers yet. Create your first server to see it here.</div></div>
+    </section>
+
+    <section class="page" id="servers">
+      <div class="section-head"><h3>My servers</h3><button class="btn" onclick="showPage('create')">＋ Create server</button></div>
+      <div id="allServers" class="server-list"><div class="empty">You haven't created any servers yet.</div></div>
+    </section>
+
+    <section class="page" id="create">
+      <div class="card">
+        <div class="eyebrow">NEW INSTANCE</div><h2 style="margin:5px 0 6px">Create your server</h2>
+        <p class="sub" style="margin-bottom:22px">Choose your edition and basic server settings.</p>
+        <form id="createForm">
+          <div class="form-grid">
+            <div class="field"><label for="serverName">SERVER NAME</label><input id="serverName" maxlength="32" placeholder="My Survival Server" required></div>
+            <div class="field"><label for="edition">GAME EDITION</label><select id="edition"><option value="Java">Minecraft Java</option><option value="Bedrock">Minecraft Bedrock</option></select></div>
+            <div class="field"><label for="software">SOFTWARE</label><select id="software"><option>Paper</option><option>Vanilla</option><option>Fabric</option><option>Purpur</option></select><div class="hint" id="softwareHint">Java server software options.</div></div>
+            <div class="field"><label for="version">MINECRAFT VERSION</label><select id="version"><option>Latest supported</option><option>1.21.x</option><option>1.20.x</option><option>Custom version (later)</option></select></div>
+            <div class="field"><label for="region">REGION</label><select id="region"><option>Automatic (when available)</option><option>Asia (planned)</option><option>Europe (planned)</option><option>North America (planned)</option></select></div>
+            <div class="field"><label for="visibility">SERVER VISIBILITY</label><select id="visibility"><option>Private</option><option>Public</option></select></div>
+          </div>
+          <div class="notice">Prototype only: this form saves a server request in your browser. It does not provision or start a real Minecraft server yet.</div>
+          <button class="btn" type="submit">Create server request →</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="page" id="features">
+      <div class="eyebrow">BUILT FOR PLAYERS</div><h2 style="margin:5px 0 18px">Hosting, made simple.</h2>
+      <div class="feature-grid">
+        <div class="feature">⚡<b>Simple controls</b><p>Clear server controls in one dashboard.</p></div>
+        <div class="feature">▤<b>Java & Bedrock</b><p>Separate support for both Minecraft editions.</p></div>
+        <div class="feature">⌘<b>Live console</b><p>Console streaming planned for backend integration.</p></div>
+        <div class="feature">◈<b>World backups</b><p>Backup and restore support planned.</p></div>
+        <div class="feature">♧<b>File manager</b><p>Manage server files after secure API integration.</p></div>
+        <div class="feature">◉<b>Resource monitor</b><p>CPU, memory and storage metrics planned.</p></div>
+      </div>
+      <div class="notice">No uptime, performance, or free-resource guarantee is being made by this frontend prototype.</div>
+    </section>
+    <div class="footer">© 2026 CLOUDNEX · YOUR GAME. YOUR SERVER. YOUR RULES.</div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  const pages = ["overview","servers","create","features"];
+  const titles = {overview:"Overview",servers:"My Servers",create:"Create Server",features:"Features"};
+  let servers = [];
+  try { servers = JSON.parse(localStorage.getItem("cloudnex_demo_servers") || "[]"); } catch(e) { servers = []; }
+
+  function showPage(name){
+    pages.forEach(p=>document.getElementById(p).classList.toggle("active",p===name));
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+    document.getElementById("pageTitle").textContent=titles[name]||"Overview";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+  function toast(msg){
+    const el=document.getElementById("toast");el.textContent=msg;el.style.display="block";
+    clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.style.display="none",2800);
+  }
+  function save(){localStorage.setItem("cloudnex_demo_servers",JSON.stringify(servers));render();}
+  function serverCard(s){
+    return `<div class="server"><div class="server-left"><div class="server-icon">${s.edition==="Java"?"☕":"◆"}</div><div><h4>${escapeHTML(s.name)}</h4><p>Minecraft ${s.edition} · ${escapeHTML(s.software)} · ${escapeHTML(s.version)}</p></div></div><span class="status">Not deployed</span></div>`;
+  }
+  function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  function render(){
+    document.getElementById("serverCount").textContent=servers.length;
+    const empty='<div class="empty">No servers yet. Create your first server to see it here.</div>';
+    document.getElementById("allServers").innerHTML=servers.length?servers.map(serverCard).join(""):empty;
+    document.getElementById("recentServers").innerHTML=servers.length?servers.slice(-3).reverse().map(serverCard).join(""):empty;
+  }
+  document.getElementById("edition").addEventListener("change",e=>{
+    const bedrock=e.target.value==="Bedrock", sel=document.getElementById("software");
+    sel.innerHTML=bedrock?'<option>Bedrock Dedicated Server</option>':'<option>Paper</option><option>Vanilla</option><option>Fabric</option><option>Purpur</option>';
+    document.getElementById("softwareHint").textContent=bedrock?"Bedrock uses its own dedicated server software.":"Java server software options.";
+  });
+  document.getElementById("createForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    const name=document.getElementById("serverName").value.trim();
+    if(!name){toast("Please enter a server name.");return;}
+    const edition=document.getElementById("edition").value;
+    const software=document.getElementById("software").value;
+    if(edition==="Bedrock" && software!=="Bedrock Dedicated Server"){toast("Choose Bedrock Dedicated Server.");return;}
+    servers.push({id:Date.now(),name,edition,software,version:document.getElementById("version").value,region:document.getElementById("region").value,visibility:document.getElementById("visibility").value});
+    save();e.target.reset();
+    document.getElementById("edition").dispatchEvent(new Event("change"));
+    showPage("servers");toast("Demo request saved in this browser.");
+  });
+  render();
+</script>
+</body>
+</html>
